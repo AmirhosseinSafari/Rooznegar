@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import VueDemo from '@/components/VueDemo'
-import Messages from '@/components/Messages'
+import News from '@/components/News'
 
 Vue.use(Router)
 
@@ -13,9 +13,9 @@ export default new Router({
       component: VueDemo
     },
     {
-      path: '/messages',
-      name: 'messages',
-      component: Messages
+      path: '/news',
+      name: 'news',
+      component: News
     }
   ]
 })

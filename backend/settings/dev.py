@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',  # < Per Whitenoise, to disable built in
     'django.contrib.staticfiles',
     'rest_framework',
-    'backend.api',
+    'api.apps.AppConfig',
+    'backend_news.apps.BackendNewsConfig'
 ]
 
 MIDDLEWARE = [
