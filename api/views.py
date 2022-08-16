@@ -13,13 +13,18 @@ from .serializers import NewsSersializer
 index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 
 class NewsViewSet(viewsets.ViewSet):
-    one_time_db_insert_counter = 0
     def list(self, request):
-        if self.one_time_db_insert_counter == 0:
+        if News.objects.first():  #checking if db is empty; if not...
+            defference_of_news_time = datetime.now() - datetime.strptime(News.objects.first().creation_time,"%Y %m %d %X")
+            if int(divmod(defference_of_news_time.total_seconds(), 60*60)[0]) >= 1: #loading the news every hour
+                jsonDataHandler()
+        else:   
             jsonDataHandler()
+        
         queryset = News.objects.all()
         serializer = NewsSersializer(queryset, many=True)
         return Response(serializer.data)
+        
 
 def jsonDataHandler():
     #/final project/survey_news/backend_news/newsman/news.json
@@ -67,8 +72,10 @@ def jsonDataHandler():
         else:
             news_time = datetime.now().strftime("%Y %m %d %X")
 
+        creation_time = datetime.now().strftime("%Y %m %d %X")
+
         try:
-            new = News(title=title, url=url, image=image, short_description=short_description, news_time=news_time)
+            new = News(title=title, url=url, image=image, short_description=short_description, news_time=news_time, creation_time=creation_time)
             new.save()
             #print(new)
         except Exception as e:
