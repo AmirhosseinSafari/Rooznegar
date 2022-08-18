@@ -1,5 +1,5 @@
 import json
-from os import link
+
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -9,9 +9,14 @@ from django.views.decorators.cache import never_cache
 from backend_news.models import News
 from rest_framework import viewsets
 from .serializers import NewsSersializer
+
 from bs4 import BeautifulSoup
 import requests
+
 import pickle
+import pandas as pd
+import numpy as np
+from sklearn.svm import SVC
 # Create your views here.
 
 index_view = never_cache(TemplateView.as_view(template_name='index.html'))
@@ -19,8 +24,8 @@ index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 class NewsViewSet(viewsets.ViewSet):
     def list(self, request):
         if News.objects.last():  #checking if db is empty; if not...
-            defference_of_news_time = datetime.now() - datetime.strptime(News.objects.last().creation_time,"%Y %m %d %X")
-            if int(divmod(defference_of_news_time.total_seconds(), 60*60*24)[0]) >= 1: #loading the news every hour
+            defference_of_news_time = datetime.now() - datetime.strptime(News.objects.first().creation_time,"%Y %m %d %X")
+            if int(divmod(defference_of_news_time.total_seconds(), 60*60)[0]) >= 1: #loading the news every hour
                 jsonDataHandler()
         else:   
             jsonDataHandler()
@@ -60,7 +65,7 @@ def jsonDataHandler():
         
         if complete_news_data == None:
             continue
-        
+
         if "a_title" in news:
             title = news["a_title"][0]
         else:
@@ -88,18 +93,25 @@ def jsonDataHandler():
 
         creation_time = datetime.now().strftime("%Y %m %d %X")
         
-
+        #predicting the category
+        category_dic = {0: 'اقتصادی',
+        1: 'ادبیات و هنر',
+        2: 'سیاسی',
+        3: 'علم و فرهنگ',
+        4: 'اجتماعی'}
 
         #load the predition model
-        #with open('backend_news/my_dumped_classifier.pkl', 'rb') as fid:
-        #    model = pickle.load(fid)
+        with open('backend_news/my_dumped_classifier.pkl', 'rb') as fid:
+            model = pickle.load(fid)
 
-        #predicted_category = model.predict()
+        model_input = [short_description]
+        predicted_category = category_dic[int(model.predict(model_input)[0])]
         
         try:
-            new = News(title=title, url=url, image=image, short_description=short_description, news_time=news_time, creation_time=creation_time)
+            new = News(title=title, url=url, image=image, short_description=short_description, news_time=news_time, creation_time=creation_time, predicted_category=predicted_category)
             new.save()
             print(new)
+            print(predicted_category)
         except Exception as e:
             print(e)
             print(title)
