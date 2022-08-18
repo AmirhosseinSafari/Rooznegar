@@ -3,12 +3,13 @@ import json
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
 from backend_news.models import News
 from rest_framework import viewsets
 from .serializers import NewsSersializer
+from django.db.models import Q
 
 from bs4 import BeautifulSoup
 import requests
@@ -23,18 +24,32 @@ index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 
 class NewsViewSet(viewsets.ViewSet):
     def list(self, request):
-        if News.objects.last():  #checking if db is empty; if not...
-            defference_of_news_time = datetime.now() - datetime.strptime(News.objects.first().creation_time,"%Y %m %d %X")
-            if int(divmod(defference_of_news_time.total_seconds(), 60*60)[0]) >= 1: #loading the news every hour
+        now = datetime.now()
+        three_hours_before = now - timedelta(hours=3)
+        if News.objects.last():  #checking if db is empty; if not...                
+            #lastObj_creation_time = News.objects.last().creation_time
+            if time_difference_in_hours(now, News.objects.last().creation_time) >= 3:
+                print("start time " + datetime.now())
                 jsonDataHandler()
-        else:   
+                print("end time " + datetime.now())
+        else:
+            print("start time " + str(datetime.now()))
             jsonDataHandler()
-        
-        queryset = News.objects.all()
+            print("end time " + str(datetime.now()))
+
+        queryset = News.objects.filter( Q(creation_time__gte = three_hours_before), Q(creation_time__lte =now) )
         serializer = NewsSersializer(queryset, many=True)
         return Response(serializer.data)
         
+def time_difference_in_hours(time1, time2):
+    if type(time1) == str:
+        time1 = datetime.strptime(time1,"%Y %m %d %X")
+    if type(time2) == str:
+        time2 = datetime.strptime(time2,"%Y %m %d %X")
 
+    defference_of_time = time1 - time2
+    return int(divmod(defference_of_time.total_seconds(), 60*60)[0])
+    
 def jsonDataHandler():
     #/final project/survey_news/backend_news/newsman/news.json
     with open("backend_news/newsman/news.json", "r") as news_file:
@@ -91,7 +106,7 @@ def jsonDataHandler():
         else:
             news_time = complete_news_data["time_news_wrote"]
 
-        creation_time = datetime.now().strftime("%Y %m %d %X")
+        #creation_time = datetime.now().strftime("%Y %m %d %X")
         
         #predicting the category
         category_dic = {0: 'اقتصادی',
@@ -108,7 +123,7 @@ def jsonDataHandler():
         predicted_category = category_dic[int(model.predict(model_input)[0])]
         
         try:
-            new = News(title=title, url=url, image=image, short_description=short_description, news_time=news_time, creation_time=creation_time, predicted_category=predicted_category)
+            new = News(title=title, url=url, image=image, short_description=short_description, news_time=news_time, predicted_category=predicted_category)
             new.save()
             print(new)
             print(predicted_category)
