@@ -23,15 +23,17 @@ from sklearn.svm import SVC
 index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 
 class NewsViewSet(viewsets.ViewSet):
+    
     def list(self, request):
         now = datetime.now()
         three_hours_before = now - timedelta(hours=3)
+        
         if News.objects.last():  #checking if db is empty; if not...                
             #lastObj_creation_time = News.objects.last().creation_time
             if time_difference_in_hours(now, News.objects.last().creation_time) >= 3:
-                print("start time " + datetime.now())
+                print("start time " + str(datetime.now()))
                 jsonDataHandler()
-                print("end time " + datetime.now())
+                print("end time " + str(datetime.now()))
         else:
             print("start time " + str(datetime.now()))
             jsonDataHandler()
@@ -40,7 +42,9 @@ class NewsViewSet(viewsets.ViewSet):
         queryset = News.objects.filter( Q(creation_time__gte = three_hours_before), Q(creation_time__lte =now) )
         serializer = NewsSersializer(queryset, many=True)
         return Response(serializer.data)
-        
+   
+    
+
 def time_difference_in_hours(time1, time2):
     if type(time1) == str:
         time1 = datetime.strptime(time1,"%Y %m %d %X")
