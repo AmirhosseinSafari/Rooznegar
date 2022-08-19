@@ -11,7 +11,7 @@ from rest_framework import routers
 from api.views import index_view, NewsViewSet
 
 router = routers.DefaultRouter()
-router.register('news', NewsViewSet, base_name="news")
+router.register('news', NewsViewSet, basename="news")
 
 urlpatterns = [
 

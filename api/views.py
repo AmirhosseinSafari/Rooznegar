@@ -19,15 +19,23 @@ import pandas as pd
 import numpy as np
 from sklearn.svm import SVC
 # Create your views here.
+from rest_framework.pagination import PageNumberPagination
 
 index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 
-class NewsViewSet(viewsets.ViewSet):
-    
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size=30
+    page_size_query_param = 'page_size'
+    max_page_size = '100'
+
+class NewsViewSet(viewsets.ModelViewSet):
+    queryset = News.objects.all()
+    serializer_class = NewsSersializer
+    pagination_class = StandardResultsSetPagination
     def list(self, request):
         now = datetime.now()
         three_hours_before = now - timedelta(hours=3)
-        
         if News.objects.last():  #checking if db is empty; if not...                
             #lastObj_creation_time = News.objects.last().creation_time
             if time_difference_in_hours(now, News.objects.last().creation_time) >= 3:
@@ -38,11 +46,12 @@ class NewsViewSet(viewsets.ViewSet):
             print("start time " + str(datetime.now()))
             jsonDataHandler()
             print("end time " + str(datetime.now()))
+        self.queryset = News.objects.filter( Q(creation_time__gte = three_hours_before), Q(creation_time__lte =now) )
+        page = self.paginate_queryset(self.queryset)
+        return Response(
+            self.serializer_class(page, many=True).data
+        )
 
-        queryset = News.objects.filter( Q(creation_time__gte = three_hours_before), Q(creation_time__lte =now) )
-        serializer = NewsSersializer(queryset, many=True)
-        return Response(serializer.data)
-   
     
 
 def time_difference_in_hours(time1, time2):
