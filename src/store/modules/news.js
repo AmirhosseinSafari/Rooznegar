@@ -1,7 +1,8 @@
 import newsService from "../../services/newsService"
 
 const state = {
-    news: []
+    news: [],
+    today_date: ""
 }
 
 const getters = {
@@ -13,15 +14,16 @@ const getters = {
 const actions = {
     getNews ({ commit }) {
         newsService.fetchNews()
-         .then(news => {
-            commit('setNews', news)
+         .then((news, today_date) => {
+            commit('setNews', news, today_date)
          })
     },
 }
 
 const mutations = {
-    setNews (state, news) {
-        state.news = news
+    setNews (state, news, today_date) {
+        state.news = news.news,
+        state.today_date = news.today_date
     },
 }
 

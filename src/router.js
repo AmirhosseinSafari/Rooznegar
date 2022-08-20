@@ -9,11 +9,6 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: VueDemo
-    },
-    {
-      path: '/news',
       name: 'news',
       component: News
     }

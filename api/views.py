@@ -18,10 +18,12 @@ import pickle
 import pandas as pd
 import numpy as np
 from sklearn.svm import SVC
-# Create your views here.
 from rest_framework.pagination import PageNumberPagination
 
-index_view = never_cache(TemplateView.as_view(template_name='index.html'))
+import jdatetime
+# Create your views here.
+
+#index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -35,10 +37,10 @@ class NewsViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     def list(self, request):
         now = datetime.now()
-        three_hours_before = now - timedelta(hours=3)
+        three_hours_before = now - timedelta(hours=6)
         if News.objects.last():  #checking if db is empty; if not...                
             #lastObj_creation_time = News.objects.last().creation_time
-            if time_difference_in_hours(now, News.objects.last().creation_time) >= 3:
+            if time_difference_in_hours(now, News.objects.last().creation_time) >= 6:
                 print("start time " + str(datetime.now()))
                 jsonDataHandler()
                 print("end time " + str(datetime.now()))
@@ -48,11 +50,18 @@ class NewsViewSet(viewsets.ModelViewSet):
             print("end time " + str(datetime.now()))
         self.queryset = News.objects.filter( Q(creation_time__gte = three_hours_before), Q(creation_time__lte =now) )
         page = self.paginate_queryset(self.queryset)
+        
+        jdatetime.set_locale('fa_IR')
+        content = {
+            "news": self.serializer_class(page, many=True).data,
+            "today_date": jdatetime.datetime.now().strftime("%a %d %B, %Y")
+        }
+
         return Response(
-            self.serializer_class(page, many=True).data
+            content, 200
         )
 
-    
+
 
 def time_difference_in_hours(time1, time2):
     if type(time1) == str:

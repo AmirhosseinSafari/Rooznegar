@@ -1,11 +1,29 @@
 <template>
   <div id="app">
-    <h1>Django VueJs Template</h1>
     <div id="nav">
-     <router-link :to="{ name: 'home' }">Vue</router-link> |
-     <router-link :to="{ name: 'news' }">news</router-link>
+      <section class="hero is-primary">
+        <div class="hero-body">
+          <p class="title">
+            روزنگار
+          </p>
+          <p class="subtitle">
+            خبرنامه‌ی آنلاین برگرفته از چندین روزنامه‌ی داخلی ایران
+          </p>
+        </div>
+      </section>
+      
+      <hr>
+        <div>
+            {{today_date}}
+        </div>
+      <hr>
+
     </div>
-    <router-view/>
+
+    <div class="contetnt">
+      <router-view/>
+    </div>
+
   </div>
 </template>
 
@@ -15,7 +33,33 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
+
+hr{
+  background-color: #00d1b2 !important;
+  margin: 0.5rem 0 !important;
+}
+
+.contetnt{
+  padding: 0 2%;
+}
+
 </style>
+
+<script>
+import { mapState, mapActions } from 'vuex'
+
+export default {
+    name: "App",
+
+    computed: mapState({
+        today_date: state => state.news.today_date
+    }),
+    methods: mapActions('news', []),
+
+    created() {
+        this.$store.dispatch('news/getNews')
+    }
+
+}
+</script>
