@@ -37,10 +37,10 @@ class NewsViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     def list(self, request):
         now = datetime.now()
-        three_hours_before = now - timedelta(hours=3)
+        three_hours_before = now - timedelta(hours=24)
         if News.objects.last():  #checking if db is empty; if not...                
             #lastObj_creation_time = News.objects.last().creation_time
-            if time_difference_in_hours(now, News.objects.last().creation_time) >= 3:
+            if time_difference_in_hours(now, News.objects.last().creation_time) >= 24:
                 print("start time " + str(datetime.now()))
                 jsonDataHandler()
                 print("end time " + str(datetime.now()))
@@ -60,7 +60,6 @@ class NewsViewSet(viewsets.ModelViewSet):
         return Response(
             content, 200
         )
-
 
 
 def time_difference_in_hours(time1, time2):

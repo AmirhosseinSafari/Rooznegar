@@ -14,16 +14,16 @@ const getters = {
 const actions = {
     getNews ({ commit }) {
         newsService.fetchNews()
-         .then((news, today_date) => {
-            commit('setNews', news, today_date)
+         .then((data) => {
+            commit('setNews', data)
          })
     },
 }
 
 const mutations = {
-    setNews (state, news, today_date) {
-        state.news = news.news,
-        state.today_date = news.today_date
+    setNews (state, data) {
+        state.news = data.news,
+        state.today_date = data.today_date
     },
 }
 
