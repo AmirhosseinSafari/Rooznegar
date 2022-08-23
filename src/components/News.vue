@@ -17,6 +17,9 @@
                             <span class="tag tagtag">
                                 موضوع: {{news[1].predicted_category}}
                             </span>
+                            <span class="tag tagtag">
+                                {{news[1].source}}
+                            </span>
                         </article>
                     <!-- </a> -->
                 </div>
@@ -33,6 +36,9 @@
                             <span class="tag tagtag">
                                 موضوع: {{news[0].predicted_category}}
                             </span>
+                            <span class="tag tagtag">
+                                {{news[0].source}}
+                            </span>
                         </article>
                     <!-- </a> -->
                 </div>
@@ -48,6 +54,9 @@
                             </div>
                             <span class="tag tagtag">
                                 موضوع: {{news[2].predicted_category}}
+                            </span>
+                            <span class="tag tagtag">
+                                {{news[2].source}}
                             </span>
                         </article>
                     <!-- </a> -->
@@ -70,6 +79,9 @@
                             <span class="tag tagtag">
                                 موضوع: {{news[3].predicted_category}}
                             </span>
+                            <span class="tag tagtag">
+                                {{news[3].source}}
+                            </span>
                         </article>
                     <!-- </a> -->
                 </div>
@@ -86,6 +98,9 @@
                             <span class="tag tagtag">
                                 موضوع: {{news[5].predicted_category}}
                             </span>
+                            <span class="tag tagtag">
+                                {{news[5].source}}
+                            </span>
                         </article>
                     <!-- </a> -->
                 </div>
@@ -101,6 +116,9 @@
                             </div>
                             <span class="tag tagtag">
                                 موضوع: {{news[4].predicted_category}}
+                            </span>
+                            <span class="tag tagtag">
+                                {{news[4].source}}
                             </span>
                         </article>
                     <!-- </a> -->
@@ -121,6 +139,9 @@
                         <span class="tag tagtag">
                             موضوع: {{news[6].predicted_category}}
                         </span>
+                        <span class="tag tagtag">
+                            {{news[6].source}}
+                        </span>
                     </article>
                     <!-- </a> -->
                 </div>
@@ -136,10 +157,14 @@
                         <span class="tag tagtag">
                             موضوع: {{news[7].predicted_category}}
                         </span>
+                        <span class="tag tagtag">
+                            {{news[7].source}}
+                        </span>
                     </article>
                     <!-- </a> -->
                 </div>
-            </div><!-- end of 2 part in a row  -->
+            </div>
+            <!-- end of 2 part in a row  -->
             
             <div class="tile is-ancestor">
 
@@ -154,6 +179,9 @@
                         </div>
                         <span class="tag tagtag">
                             موضوع: {{news[10].predicted_category}}
+                        </span>
+                        <span class="tag tagtag">
+                            {{news[10].source}}
                         </span>
                     </article>
                     <!-- </a> -->
@@ -172,6 +200,9 @@
                         <span class="tag tagtag">
                             موضوع: {{news[8].predicted_category}}
                         </span>
+                        <span class="tag tagtag">
+                            {{news[8].source}}
+                        </span>
                     </article>
                     <!-- </a> -->
                     
@@ -186,6 +217,9 @@
                         <span class="tag tagtag">
                             موضوع: {{news[9].predicted_category}}
                         </span>
+                        <span class="tag tagtag">
+                            {{news[9].source}}
+                        </span>
                     </article>
                     <!-- </a> -->
                 </div>
@@ -194,7 +228,7 @@
 
             <!-- for news -->
             <div class="tile is-ancestor is-flex-wrap-wrap">
-                <div class="tile is-parent is-3 is-vertical" v-for="(n, index) in news" :key="index">
+                <div class="tile is-parent is-3 is-vertical" v-for="(n, index) in sliceItems(11 ,30)" :key="index">
                         <!-- <a v-if="news[index+2]" v-bind:href="`${news[index+2].url}`"> -->
                         <article v-if="n" class="tile is-child box boxbox">
                             <img class="image is-1by1" v-bind:src="`${n.image}`">
@@ -206,28 +240,37 @@
                             <span class="tag tagtag">
                                 موضوع: {{n.predicted_category}}
                             </span>
+
+                            <span class="tag tagtag">
+                                {{n.source}}
+                            </span>
                         </article>
                         <!-- </a> -->
                     
                 </div>
             </div>
             
-
+            <!-- here is for adding the load next 30 news (how to detect user scrold till the tend of page) (also reload icon)-->
         </div>
     </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
     name: "News",
 
-    
-
     computed: mapState({
         news: state => state.news.news,
     }),
+
+    methods: {
+        ...mapActions(["getNextNews"]),
+        sliceItems: function (start, end) {
+            return this.news.slice(start, end);
+        }
+    }
     //methods: mapActions('news', []),
 
     //created() {
@@ -252,5 +295,6 @@ img{
 
 .tagtag{
     color: #45a29e !important;
+    margin: 1%;
 }
 </style>
