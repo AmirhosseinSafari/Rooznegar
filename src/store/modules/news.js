@@ -29,11 +29,11 @@ const actions = {
 
 const mutations = {
     setNews (state, data) {
-        state.news.unshift(data.news),
+        state.news = data.news,
         state.today_date = data.today_date
     },
     setNextNews (state, data) {
-        state.news.unshift(data.news),
+        state.news.push(data.news),
         state.today_date = data.today_date,
         state.page = state.page + 1
     },
