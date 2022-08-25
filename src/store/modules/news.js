@@ -2,6 +2,7 @@ import newsService from "../../services/newsService"
 
 const state = {
     news: [],
+    news_next: [],
     today_date: "",
     page: 2
 }
@@ -22,20 +23,19 @@ const actions = {
     getNextNews ({commit}) {
         newsService.fetchNextNews(state.page)
          .then((data) => {
-            commit('setNews', data)
-         })
+            commit('setNextNews', data)
+        })
     }
 }
 
 const mutations = {
     setNews (state, data) {
-        state.news = data.news,
-        state.today_date = data.today_date
+        state.news = data.news;
+        state.today_date = data.today_date;
     },
     setNextNews (state, data) {
-        state.news.push(data.news),
-        state.today_date = data.today_date,
-        state.page = state.page + 1
+        state.news = state.news.concat(data.data.news);
+        state.page = state.page + 1;
     },
 }
 
