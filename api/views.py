@@ -14,6 +14,7 @@ from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 
 import jdatetime
+import convert_numbers
 # Create your views here.
 
 #index_view = never_cache(TemplateView.as_view(template_name='index.html'))
@@ -45,9 +46,21 @@ class NewsViewSet(viewsets.ModelViewSet):
         page = self.paginate_queryset(self.queryset)
         
         jdatetime.set_locale('fa_IR')
+
+        persion_date = jdatetime.datetime.now().strftime("%a %d %B, %Y")
+        persion_date = persion_date.split(" ")
+        
+        if int(persion_date[1]) < 10:
+            persion_day = convert_numbers.english_to_persian(persion_date[1][1])
+        else:
+            persion_day = convert_numbers.english_to_persian(persion_date[1])
+        
+        persion_date_str = persion_date[0] + " " + persion_day + " " + persion_date[2] + convert_numbers.english_to_persian(persion_date[3])
+
+
         content = {
             "news": self.serializer_class(page, many=True).data,
-            "today_date": jdatetime.datetime.now().strftime("%a %d %B, %Y")
+            "today_date": persion_date_str
         }
 
         return Response(

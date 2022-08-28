@@ -1,7 +1,9 @@
 <template>
     <div>
         <div id="content_news" ref="content_news">
-            <p v-if="news.length === 0">No Messages</p>
+            <p v-if="news.length < 30">
+                ...در حال بارگیری
+            </p>
 
             <div class="tile is-ancestor">
 
@@ -118,7 +120,6 @@ export default {
                 this.$store.dispatch('news/getNextNews')
             }
         }, { passive: false });
-
         })
     },
 
@@ -128,11 +129,6 @@ export default {
             return this.news.slice(start, end);
         },
     },
-    //methods: mapActions('news', []),
-
-    //created() {
-    //    this.$store.dispatch('news/getNews')
-    //}
 
 }
 

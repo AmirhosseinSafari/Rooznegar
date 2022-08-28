@@ -48,18 +48,32 @@ hr{
 
 <script>
 import { mapState, mapActions } from 'vuex'
+// import Loading from './components/Loading.vue';
 
 export default {
     name: "App",
-
-    computed: mapState({
-        today_date: state => state.news.today_date
-    }),
-    methods: mapActions('news', []),
-
+    computed: {
+      ...mapState({
+        today_date: state => state.news.today_date,
+        news: state => state.news.news,
+      }),
+      count () {
+        return this.$store.state.news.news.length
+      }
+    },
+    methods: mapActions('news', ["getNews"]),
     created() {
-        this.$store.dispatch('news/getNews')
-    }
+        this.getNews()
+    },
+    // components: { Loading },
 
+    // watch: {
+    //   count: function (newCount, oldCount) {
+    //     console.log(`We have ${newCount}!`)
+    //     var a = document.getElementById("load")
+    //     a.remove()
+    //   }, deep: true
+    // }
+    
 }
 </script>
