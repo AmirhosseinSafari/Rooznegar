@@ -76,16 +76,9 @@ def news_dataCompeleter(url ,soup):
         try:
             try:
                 title = soup.find("h1", class_="title").text 
-                photo = soup.find("img", class_="lead_image")["src"]
+                photo = links[2] + soup.find("img", class_="lead_image")["src"]
                 short_description = soup.find("div", class_="subtitle").text
-                
-                temp = soup.find_all("p") 
-                body = "" 
-
-                for i in temp:
-                    if "body_media_content_show" in i.parent["class"]:
-                        body = body + i.text + " "
-
+                body = soup.find("section", class_="body").text
                 time_news_wrote = soup.find("article", class_="n-data").text
                 source = "خبرگذاری رسا"
                 return {"title":title, "photo": photo, "body": body, "short_description": short_description, "time_news_wrote": time_news_wrote, "source": source}

@@ -45,9 +45,10 @@ class NewsViewSet(viewsets.ModelViewSet):
         self.queryset = News.objects.filter( Q(creation_time__gte = three_hours_before), Q(creation_time__lte =now) )
         page = self.paginate_queryset(self.queryset)
         
+        # trasfering the hearder date into farsi (even numbers)
         jdatetime.set_locale('fa_IR')
 
-        persion_date = jdatetime.datetime.now().strftime("%a %d %B, %Y")
+        persion_date = jdatetime.datetime.now().strftime("%a %d %B، %Y")
         persion_date = persion_date.split(" ")
         
         if int(persion_date[1]) < 10:
@@ -55,12 +56,15 @@ class NewsViewSet(viewsets.ModelViewSet):
         else:
             persion_day = convert_numbers.english_to_persian(persion_date[1])
         
-        persion_date_str = persion_date[0] + " " + persion_day + " " + persion_date[2] + convert_numbers.english_to_persian(persion_date[3])
-
+        persion_date_str = persion_date[0] + " " + persion_day + " " + persion_date[2] + " " +  convert_numbers.english_to_persian(persion_date[3])
+        
+        page_total_count = int(len(self.queryset)/30 + 1)
+        # print(page_total_count)
 
         content = {
             "news": self.serializer_class(page, many=True).data,
-            "today_date": persion_date_str
+            "today_date": persion_date_str,
+            "page_total_count": page_total_count
         }
 
         return Response(
