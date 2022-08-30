@@ -3,7 +3,7 @@
     <article v-if="newsObject" class="tile is-child box boxbox">
         <img class="image is-1by1" v-bind:src="`${newsObject.image}`">
         <p class="title">{{newsObject.title}}</p>
-        <p class="subtitle">تاریخ انتشار: {{newsObject.news_time}}</p>
+        <p class="subtitle">{{newsObject.news_time}}</p>
         <div class="content">
             <p>{{newsObject.short_description}}</p>
         </div>
@@ -40,7 +40,7 @@
                     <p style="font-size: 1.25em;">منبع خبر:
                         <a v-bind:href="`${newsObject.url}`">{{newsObject.source}}</a>
                     </p>
-                    <p class="subtitle" style="font-size: 1rem;">تاریخ انتشار:
+                    <p class="subtitle" style="font-size: 1rem;">
                         {{newsObject.news_time}}
                     </p>
 

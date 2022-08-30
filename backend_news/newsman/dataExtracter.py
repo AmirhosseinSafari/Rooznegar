@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 
+from datetime import datetime
 
 import pickle
 import pandas as pd
@@ -26,7 +27,7 @@ def news_dataCompeleter(url ,soup):
                 photo = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/ISNA_logo.jpg/250px-ISNA_logo.jpg"
             short_description = soup.find("p", class_="summary").text
             body = soup.find("div", class_="item-text").text
-            time_news_wrote = soup.find("span", class_="text-meta").text
+            time_news_wrote = "تاریخ انتشار:" + soup.find("span", class_="text-meta").text
             source = "خبرگذاری دانشجویان ایران (ایسنا)"
             
             return {"title":title, "photo": photo, "body": body, "short_description": short_description, "time_news_wrote": time_news_wrote, "source": source}
@@ -72,14 +73,14 @@ def news_dataCompeleter(url ,soup):
             return None
 
     if links[2] in url:
-        #'https://rasanews.ir/',
+        #'https://rasanews.ir/', 
         try:
             try:
                 title = soup.find("h1", class_="title").text 
                 photo = links[2] + soup.find("img", class_="lead_image")["src"]
                 short_description = soup.find("div", class_="subtitle").text
                 body = soup.find("section", class_="body").text
-                time_news_wrote = soup.find("article", class_="n-data").text
+                time_news_wrote = "تاریخ انتشار:" + soup.find("article", class_="n-data").text
                 source = "خبرگذاری رسا"
                 return {"title":title, "photo": photo, "body": body, "short_description": short_description, "time_news_wrote": time_news_wrote, "source": source}
 
@@ -102,7 +103,7 @@ def news_dataCompeleter(url ,soup):
                 photo = links[2] + soup.find("div", class_="album_list_content").a.img["src"]
                 short_description = soup.find("div", class_="subtitle").text
                 body = soup.find("div", class_="tags_title").text
-                time_news_wrote = soup.find("article", class_="photo-n-data").text
+                time_news_wrote = "تاریخ انتشار:" + soup.find("article", class_="photo-n-data").text
                 source = "خبرگذاری رسا"
                 return {"title":title, "photo": photo, "body": body, "short_description": short_description, "time_news_wrote": time_news_wrote, "source": source}
             except:
@@ -114,7 +115,7 @@ def news_dataCompeleter(url ,soup):
                 short_description = soup.find("section", class_="photo-news-items").div.a.text
                 body = soup.find("div", class_="tags_title").text
                 temp = soup.find("section", class_="photo-news-items")
-                time_news_wrote = temp.select("div:nth-of-type(3)")[0].text
+                time_news_wrote = "تاریخ انتشار:" + temp.select("div:nth-of-type(3)")[0].text
                 source = "خبرگذاری رسا"
                 return {"title":title, "photo": photo, "body": body, "short_description": short_description, "time_news_wrote": time_news_wrote, "source": source}
             except:
@@ -160,7 +161,7 @@ def news_dataCompeleter(url ,soup):
                     if "story" in i.parent["class"]: 
                         body = body + i.text + " " 
 
-                time_news_wrote = soup.find("li", class_="time").text
+                time_news_wrote = "تاریخ انتشار:" + soup.find("li", class_="time").text
                 source = "خبرگذاری تسنیم"
                 return {"title":title, "photo": photo, "body": body, "short_description": short_description, "time_news_wrote": time_news_wrote, "source": source}
 
@@ -169,8 +170,8 @@ def news_dataCompeleter(url ,soup):
                 photo = "https://newsmedia.tasnimnews.com/Tasnim/Uploaded/Image/1394/10/01/139410011036272706762304.jpg"
                 short_description = soup.find("h3", class_= "lead").text
 
-                body = ""
-                time_news_wrote = soup.find("time").text 
+                body = short_description
+                time_news_wrote = "تاریخ انتشار:" + soup.find("time").text 
                 source = "خبرگذاری تسنیم"
                 return {"title":title, "photo": photo, "body": body, "short_description": short_description, "time_news_wrote": time_news_wrote, "source": source}
 
@@ -262,3 +263,6 @@ print(len(json_object))
 jsonString = json.dumps(json_object)
 with open("./100_news.json", "w") as f:  
     f.write( jsonString )
+
+with open("./lastNewsUpdate.txt", "w") as f:
+    f.write(datetime.now().strftime("%Y %m %d %X"))

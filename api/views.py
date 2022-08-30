@@ -31,9 +31,10 @@ class NewsViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     def list(self, request):
         now = datetime.now()
-        three_hours_before = now - timedelta(hours=2)
+        two_hours_before = now - timedelta(hours=2)
         if News.objects.last():  #checking if db is empty; if not...                
             #lastObj_creation_time = News.objects.last().creation_time
+            # old=>rand date; b=> the lastNewsUpdate date; a==b ? pass: read news file then set the new old and b
             if time_difference_in_hours(now, News.objects.last().creation_time) >= 2:
                 print("start time " + str(datetime.now()))
                 jsonDataHandler()
@@ -42,24 +43,18 @@ class NewsViewSet(viewsets.ModelViewSet):
             print("start time " + str(datetime.now()))
             jsonDataHandler()
             print("end time " + str(datetime.now()))
-        self.queryset = News.objects.filter( Q(creation_time__gte = three_hours_before), Q(creation_time__lte =now) )
+        self.queryset = News.objects.filter( Q(creation_time__gte = two_hours_before), Q(creation_time__lte =now) )
         page = self.paginate_queryset(self.queryset)
         
         # trasfering the hearder date into farsi (even numbers)
         jdatetime.set_locale('fa_IR')
 
-        persion_date = jdatetime.datetime.now().strftime("%a %d %B، %Y")
-        persion_date = persion_date.split(" ")
+        persion_date = jdatetime.datetime.now()
         
-        if int(persion_date[1]) < 10:
-            persion_day = convert_numbers.english_to_persian(persion_date[1][1])
-        else:
-            persion_day = convert_numbers.english_to_persian(persion_date[1])
-        
-        persion_date_str = persion_date[0] + " " + persion_day + " " + persion_date[2] + " " +  convert_numbers.english_to_persian(persion_date[3])
+        persion_date_str = persion_date.strftime("%a") + " " + convert_numbers.english_to_persian(int(persion_date.strftime("%d"))) + " " + persion_date.strftime("%B،") + " " +  convert_numbers.english_to_persian(persion_date.strftime("%Y"))
         
         page_total_count = int(len(self.queryset)/30 + 1)
-        # print(page_total_count)
+        #  print(page_total_count)
 
         content = {
             "news": self.serializer_class(page, many=True).data,
