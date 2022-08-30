@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <Loading v-if="showLoading"/>
     <div id="nav">
       <section class="hero is-primary">
         <div class="hero-body">
@@ -48,7 +49,7 @@ hr{
 
 <script>
 import { mapState, mapActions } from 'vuex'
-// import Loading from './components/Loading.vue';
+import Loading from './components/Loading.vue';
 
 export default {
     name: "App",
@@ -56,24 +57,14 @@ export default {
       ...mapState({
         today_date: state => state.news.today_date,
         news: state => state.news.news,
+        showLoading: state => state.news.showLoading,
       }),
-      count () {
-        return this.$store.state.news.news.length
-      }
     },
     methods: mapActions('news', ["getNews"]),
     created() {
         this.getNews()
     },
-    // components: { Loading },
-
-    // watch: {
-    //   count: function (newCount, oldCount) {
-    //     console.log(`We have ${newCount}!`)
-    //     var a = document.getElementById("load")
-    //     a.remove()
-    //   }, deep: true
-    // }
+    components: { Loading },
     
 }
 </script>

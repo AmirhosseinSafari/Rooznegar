@@ -116,15 +116,15 @@ export default {
 
             if(scrollPoint >= totalPageHeight)
             {   
-                console.log("at bottom");
-                this.$store.dispatch('news/getNextNews')
+                //console.log("at bottom");
+                this.getNextNews()
             }
         }, { passive: false });
         })
     },
 
     methods: {
-        ...mapActions(['getNextNews']),
+        ...mapActions('news', ["getNextNews"]),
         sliceItems: function (start, end) {
             return this.news.slice(start, end);
         },
