@@ -1,57 +1,8 @@
-# Django Vue Template ✌️ 🐍
+# Rooznegar, an online news survey
 
-![Vue Logo](/src/assets/logo-vue.png "Vue Logo")
-![Django Logo](/src/assets/logo-django.png "Django Logo")
+In today's world, Due to the huge volume of news in different news sources, tracking news from these sources is a time-consuming task and due to the difference in the way news is displayed on different news websites, it causes the user to be slow or confused in following the news. It should also be mentioned that users are usually interested in checking and comparing news from several sources; Therefore, it is important to have a platform for presenting news from different news sources at once and a display format.
 
-This template is a minimal example for an application using Vue and Django.
-
-Vue and Django are clearly separated in this project. Vue, Yarn and Webpack handles all frontend logic and bundling assessments. Django and Django REST framework to manage Data Models, Web API and serve static files.
-
-While it's possible to add endpoints to serve django-rendered html responses, the intention is to use Django primarily for the backend, and have view rendering and routing and handled by Vue + Vue Router as a Single Page Application (SPA).
-
-Out of the box, Django will serve the application entry point (`index.html` + bundled assets) at `/` ,
-data at `/api/`, and static files at `/static/`. Django admin panel is also available at `/admin/` and can be extended as needed.
-
-The application templates from Vue CLI `create` and Django `createproject` are kept as close as possible to their
-original state, except where a different configuration is needed for better integration of the two frameworks.
-
-#### Alternatives
-
-If this setup is not what you are looking for, you might want look at other similar projects:
-
-* [ariera/django-vue-template](https://github.com/ariera/django-vue-template)
-* [vchaptsev/cookiecutter-django-vue](https://github.com/vchaptsev/cookiecutter-django-vue)
-
-Prefer Flask? Checkout my [gtalarico/flask-vuejs-template](https://github.com/gtalarico/flask-vuejs-template)
-
-### Demo
-
-[Live Demo](https://django-vue-template-demo.herokuapp.com/)
-
-### Includes
-
-* Django
-* Django REST framework
-* Django Whitenoise, CDN Ready
-* Vue CLI 3
-* Vue Router
-* Vuex
-* Gunicorn
-* Configuration for Heroku Deployment
-
-
-### Template Structure
-
-
-| Location             |  Content                                   |
-|----------------------|--------------------------------------------|
-| `/backend`           | Django Project & Backend Config            |
-| `/backend/api`       | Django App (`/api`)                        |
-| `/src`               | Vue App .                                  |
-| `/src/main.js`       | JS Application Entry Point                 |
-| `/public/index.html` | [Html Application Entry Point](https://cli.vuejs.org/guide/html-and-static-assets.html) (`/`)         |
-| `/public/static`     | Static Assets                              |
-| `/dist/`             | Bundled Assets Output (generated at `yarn build`) |
+`Rosnegar` program is an online Farsi newsletter that was created to solve this problem. This program collects news from several Irianian online news outlets, including including Islamic Republic of Iran Radio and Television, Tasnim, Rasa, Rozno, and Students of Iran (ISNA) and then categorizes these news using artificial intelligence technology into appropriate topics for each news item. It has tried to make it easier for users to follow the news.
 
 ## Prerequisites
 
@@ -62,28 +13,32 @@ Before getting started you should have the following installed and running:
 - [X] Python 3 - [instructions](https://wiki.python.org/moin/BeginnersGuide)
 - [X] Pipenv - [instructions](https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv)
 
-## Setup Template
-
-```
-$ git clone https://github.com/gtalarico/django-vue-template
-$ cd django-vue-template
-```
-
-Setup
+## Setup
+First run command below to install dependencies and setting up:
 ```
 $ yarn install
-$ pipenv install --dev && pipenv shell
+$ pipenv install
+$ pipenv shell
+$ pip install jdatetime
+$ pip install convert_numbers
 $ python manage.py migrate
 ```
 
 ## Running Development Servers
+You can run development servers by commands below (you will need `three` shells) :
 
+### `Shell No.1`
+Shell No.1 will keep the scrapers up and running and also refetching the news every 2 hours autometically (be patient so the program fetches all news, it will take some minutes up to your internet conection speed):
+```
+./run.sh
+```
+### `Shell No.2`
+Running the backend:
 ```
 $ python manage.py runserver
 ```
-
-From another tab in the same directory:
-
+### `Shell No.3`
+Running the frontend (in the first run it will take some few minutes to insert all news to database, after loading page fades away, refresh youe brower tab) :
 ```
 $ yarn serve
 ```
@@ -104,72 +59,29 @@ and the page will not reload on changes.
 $ yarn build
 $ python manage.py runserver
 ```
-## Pycharm additional configuration
 
-Follow this guide to ensure you have pipenv setup
+### Program features
+* Ability to view all the news announcements with tags related to each news
+* Display the full text of the news by clicking on the read more option
+* Display the news history and provide a link to the news source
+* Display the subject detected by the artificial intelligence model
+* Displaying all Persian pages
+* Ability to load more news by reaching the bottom of the page
+* Refetching the news almost every 2 hours
+        
 
-https://www.jetbrains.com/help/pycharm/pipenv.html
+### Technologies used:
+* Django as backend
+* Django REST framework
+* Django Whitenoise for static files
+* Vue CLI 3 as frontend
+* Vue Router for routing
+* Vuex as state management pattern
+* Scrapy as web scraper
+* Beautiful soup as web scraper
+* Bash scripting for keep scrapers running
+* Sqlite3 as database
+* SVM classifier as AI model classifier
+* Bulma as CSS framework
 
-Click "Edit Configurations"
-
-Select Django Server under templates
-
-Click + to create a config from the templates
-
-In Environment variables add
-
-```
-PYTHONUNBUFFERED=1;DJANGO_SETTINGS_MODULE=backend.settings.dev
-```
-
-Click Apply then Ok
-
-## Deploy
-
-* Set `ALLOWED_HOSTS` on [`backend.settings.prod`](/backend/settings/prod.py)
-
-### Heroku Server
-
-```
-$ heroku apps:create django-vue-template-demo
-$ heroku git:remote --app django-vue-template-demo
-$ heroku buildpacks:add --index 1 heroku/nodejs
-$ heroku buildpacks:add --index 2 heroku/python
-$ heroku addons:create heroku-postgresql:hobby-dev
-$ heroku config:set DJANGO_SETTINGS_MODULE=backend.settings.prod
-$ heroku config:set DJANGO_SECRET_KEY='...(your django SECRET_KEY value)...'
-
-$ git push heroku
-```
-
-Heroku's nodejs buildpack will handle install for all the dependencies from the [`package.json`](/package.json) file.
-It will then trigger the `postinstall` command which calls `yarn build`.
-This will create the bundled `dist` folder which will be served by whitenoise.
-
-The python buildpack will detect the [`Pipfile`](/Pipfile) and install all the python dependencies.
-
-The [`Procfile`](/Procfile) will run Django migrations and then launch Django'S app using gunicorn, as recommended by heroku.
-
-##### Heroku One Click Deploy
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/gtalarico/django-vue-template)
-
-## Static Assets
-
-See `settings.dev` and [`vue.config.js`](/vue.config.js) for notes on static assets strategy.
-
-This template implements the approach suggested by Whitenoise Django.
-For more details see [WhiteNoise Documentation](http://whitenoise.evans.io/en/stable/django.html)
-
-It uses Django Whitenoise to serve all static files and Vue bundled files at `/static/`.
-While it might seem inefficient, the issue is immediately solved by adding a CDN
-with Cloudfront or similar.
-Use [`vue.config.js`](/vue.config.js) > `baseUrl` option to set point all your assets to the CDN,
-and then set your CDN's origin back to your domains `/static` url.
-
-Whitenoise will serve static files to your CDN once, but then those assets are cached
-and served directly by the CDN.
-
-This allows for an extremely simple setup without the need for a separate static server.
-
-[Cloudfront Setup Wiki](https://github.com/gtalarico/django-vue-template/wiki/Setup-CDN-on-Cloud-Front)
+(I should mention that I used [gtalarico](https://github.com/gtalarico/django-vue-template) vue + django template for this project.)
