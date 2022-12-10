@@ -4,6 +4,124 @@ In today's world, Due to the huge volume of news in different news sources, trac
 
 `Rosnegar` program is an online Farsi newsletter that was created to solve this problem. This program collects news from several Irianian online news outlets, including including Islamic Republic of Iran Radio and Television, Tasnim, Rasa, Rozno, and Students of Iran (ISNA) and then categorizes these news using artificial intelligence technology into appropriate topics for each news item. It has tried to make it easier for users to follow the news.
 
+## File structure and content of them
+| Location             |  Content                                   |
+|----------------------|--------------------------------------------|
+| `/api`               | Backend API of news                        |
+| `/backend`           | Django Project & Backend Config            |
+| `/backend_news`      | News model & AI model & web scraper        |
+| `/backend_news/newsman`      | Fetching news from other news websites (web scraping) |
+| `/src`               | Vue App                                    |
+| `/src/main.js`       | JS Application Entry Point                 |
+| `/public/index.html` | Html Application Entry Point               |
+| `/public/static`     | Static Assets                              |
+| `/dist/`             | Bundled Assets Output (generated at `yarn build`) |
+
+```bash
+.
+├── api
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   └── views.py
+├── app.json
+├── backend
+│   ├── settings
+│   │   ├── dev.py
+│   │   ├── __init__.py
+│   │   ├── prod.py
+│   ├── urls.py
+│   └── wsgi.py
+├── backend_news
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   │   ├── 0001_initial.py
+│   │   ├── 0002_news_creation_time.py
+│   │   ├── 0003_auto_20220816_0805.py
+│   │   ├── 0004_auto_20220816_0812.py
+│   │   ├── 0005_auto_20220817_0424.py
+│   │   ├── 0006_auto_20220818_2245.py
+│   │   ├── 0007_news_body.py
+│   │   ├── 0008_news_source.py
+│   │   └── __init__.py
+│   ├── models.py
+│   ├── my_dumped_classifier.pkl
+│   ├── newsman
+│   │   ├── 100_news.json
+│   │   ├── dataExtracter.py
+│   │   ├── lastNewsUpdate.txt
+│   │   ├── news.json
+│   │   ├── newsman
+│   │   │   ├── __init__.py
+│   │   │   ├── items.py
+│   │   │   ├── middlewares.py
+│   │   │   ├── pipelines.py
+│   │   │   ├── settings.py
+│   │   │   └── spiders
+│   │   │       ├── __init__.py
+│   │   │       ├── news_spider.py
+│   │   └── scrapy.cfg
+│   ├── tests.py
+│   └── views.py
+├── db.sqlite3
+├── dist
+│   ├── index.html
+│   └── static
+│       ├── css
+│       │   ├── app.a44d0384.css
+│       │   └── chunk-vendors.0ea4d1d3.css
+│       ├── favicon.ico
+│       └── js
+│           ├── app.4a38c89b.js
+│           ├── app.4a38c89b.js.map
+│           ├── chunk-vendors.41368f00.js
+│           └── chunk-vendors.41368f00.js.map
+├── LICENSE
+├── manage.py
+├── node_modules
+├── package.json
+├── package-lock.json
+├── Pipfile
+├── Pipfile.lock
+├── Procfile
+├── public
+│   ├── index.html
+│   └── static
+│       └── favicon.ico
+├── README.md
+├── requirements.txt
+├── run.sh
+├── src
+│   ├── App.vue
+│   ├── assets
+│   │   ├── logo-django.png
+│   │   ├── logo-vue.png
+│   │   └── Spinner-0.9s-250px.gif
+│   ├── components
+│   │   ├── Loading.vue
+│   │   ├── NewsObject.vue
+│   │   └── News.vue
+│   ├── main.js
+│   ├── router.js
+│   ├── services
+│   │   ├── api.js
+│   │   └── newsService.js
+│   └── store
+│       ├── index.js
+│       └── modules
+│           └── news.js
+├── vue.config.js
+└── yarn.lock
+```
+
+
+
 ## Prerequisites
 
 Before getting started you should have the following installed and running:
